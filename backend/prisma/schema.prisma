@@ -1,0 +1,63 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id @default(uuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  name      String
+  email     String   @unique
+  password  String
+
+  reports   Report[]
+
+  @@map("users")
+}
+
+model Report {
+  id              String   @id @default(uuid())
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  userId          String?
+  user            User?    @relation(fields: [userId], references: [id])
+
+  fileName        String?
+  inputType       InputType    @default(TEXT)
+  originalText    String       @db.Text
+
+  plagiarismScore Float        @default(0)
+  sentences       Json
+  sources         Json
+
+  aiScore         Float        @default(0)
+  humanScore      Float        @default(0)
+  aiModelUsed     String?
+
+  status          ReportStatus @default(PENDING)
+  errorMessage    String?
+  pdfPath         String?
+
+  @@index([createdAt])
+  @@index([userId])
+  @@map("reports")
+}
+
+enum InputType {
+  TEXT
+  FILE
+}
+
+enum ReportStatus {
+  PENDING
+  PROCESSING
+  COMPLETED
+  FAILED
+}

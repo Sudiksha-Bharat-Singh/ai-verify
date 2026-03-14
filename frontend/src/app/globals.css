@@ -1,0 +1,97 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --font-space: 'Space Grotesk', sans-serif;
+    --font-jetbrains: 'JetBrains Mono', monospace;
+  }
+
+  * {
+    box-sizing: border-box;
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    font-family: var(--font-space);
+    background: #080a12;
+    overflow-x: hidden;
+  }
+
+  /* Custom scrollbar */
+  ::-webkit-scrollbar { width: 6px; height: 6px; }
+  ::-webkit-scrollbar-track { background: #0d0f1a; }
+  ::-webkit-scrollbar-thumb { background: #353b6a; border-radius: 3px; }
+  ::-webkit-scrollbar-thumb:hover { background: #6366f1; }
+}
+
+@layer components {
+  /* Glass card effect */
+  .glass {
+    background: rgba(13, 15, 26, 0.7);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(99, 102, 241, 0.12);
+  }
+
+  .glass-light {
+    background: rgba(22, 26, 50, 0.6);
+    backdrop-filter: blur(8px);
+    border: 1px solid rgba(99, 102, 241, 0.08);
+  }
+
+  /* Score ring animation */
+  .score-ring {
+    animation: dashOffset 1.5s ease forwards;
+  }
+
+  @keyframes dashOffset {
+    from { stroke-dashoffset: 339; }
+  }
+
+  /* Plagiarized text highlight */
+  .highlight-plagiarized {
+    background: rgba(239, 68, 68, 0.18);
+    border-bottom: 2px solid rgba(239, 68, 68, 0.6);
+    border-radius: 2px;
+    cursor: pointer;
+    transition: background 0.15s;
+  }
+  .highlight-plagiarized:hover {
+    background: rgba(239, 68, 68, 0.3);
+  }
+
+  /* Glow effects */
+  .glow-violet {
+    box-shadow: 0 0 30px rgba(99, 102, 241, 0.15), 0 0 60px rgba(99, 102, 241, 0.05);
+  }
+  .glow-red {
+    box-shadow: 0 0 20px rgba(239, 68, 68, 0.2);
+  }
+  .glow-green {
+    box-shadow: 0 0 20px rgba(34, 197, 94, 0.2);
+  }
+
+  /* Grid background */
+  .grid-bg {
+    background-image: radial-gradient(circle, rgba(99, 102, 241, 0.08) 1px, transparent 1px);
+    background-size: 28px 28px;
+  }
+}
+
+@layer utilities {
+  .text-gradient {
+    background: linear-gradient(135deg, #818cf8 0%, #6366f1 40%, #a78bfa 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .border-gradient {
+    border-image: linear-gradient(135deg, #6366f1, #a78bfa) 1;
+  }
+}

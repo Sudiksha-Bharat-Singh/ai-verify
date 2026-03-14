@@ -1,0 +1,18 @@
+{
+  "name": "ai-verify",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "concurrently \"npm run dev:backend\" \"npm run dev:ai\" \"npm run dev:frontend\"",
+    "dev:frontend": "cd frontend && npm run dev",
+    "dev:backend": "cd backend && npm run dev",
+    "dev:ai": "cd ai-engine && uvicorn main:app --reload --port 8000",
+    "install:all": "cd frontend && npm install && cd ../backend && npm install",
+    "docker:up": "cd docker && docker-compose up --build",
+    "docker:down": "cd docker && docker-compose down",
+    "setup": "npm run install:all && cp backend/.env.example backend/.env && cp frontend/.env.example frontend/.env.local && cp ai-engine/.env.example ai-engine/.env && echo '\\n✅ Setup complete! Edit .env files with your API keys.'"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2"
+  }
+}

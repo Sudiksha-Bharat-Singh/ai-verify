@@ -1,0 +1,46 @@
+# Backend Dockerfile
+FROM node:20-alpine AS base
+
+# Install dependencies for Puppeteer/Chromium
+RUN apk add --no-cache \
+    chromium \
+    nss \
+    freetype \
+    freetype-dev \
+    harfbuzz \
+    ca-certificates \
+    ttf-freefont \
+    curl
+
+ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true
+ENV PUPPETEER_EXECUTABLE_PATH=/usr/bin/chromium-browser
+
+WORKDIR /app
+
+# ─── Dependencies ─────────────────────────────────────────────────────────────
+FROM base AS deps
+COPY package*.json ./
+RUN npm ci --only=production
+
+# ─── Build (generate Prisma client) ───────────────────────────────────────────
+FROM base AS builder
+COPY package*.json ./
+RUN npm ci
+COPY . .
+RUN npx prisma generate
+
+# ─── Production image ─────────────────────────────────────────────────────────
+FROM base AS runner
+ENV NODE_ENV=production
+
+RUN addgroup -g 1001 -S nodejs && adduser -S nodeuser -u 1001
+
+COPY --from=deps /app/node_modules ./node_modules
+COPY --from=builder /app/node_modules/.prisma ./node_modules/.prisma
+COPY --chown=nodeuser:nodejs . .
+
+RUN mkdir -p uploads && chown nodeuser:nodejs uploads
+USER nodeuser
+
+EXPOSE 4000
+CMD ["node", "src/server.js"]
